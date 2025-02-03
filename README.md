@@ -1,52 +1,134 @@
-# Solving an SDG Problem with Data (Choose Your SDG)
+### 🔧Solving an SDG Problem with Data.
 
-## Overview
-Select a Sustainable Development Goal (SDG) that resonates with you and develop a data-driven solution to address a specific problem within that SDG. Design a database, perform data analysis, and use Microsoft Excel as the user interface.
+# SDG 3: Maternal Mortality Data Analysis 📊
 
-## Objectives
-- Choose an SDG and identify a specific problem to address.
-- Design and implement a relational database relevant to your chosen problem.
-- Write SQL queries to retrieve and analyze data.
-- Use Microsoft Excel for data visualization and analysis.
+### [![Home Screenshot](./screenshot.png)](https://docs.google.com/presentation/d/1iFs9bm8bC3JX_Rr49ghvOc8DxYUAuu0m3WAhoI_A4eU/edit?usp=sharing)
 
-## Requirements
+This project addresses **Sustainable Development Goal 3 (Good Health and Well-being)** by analyzing maternal mortality rates and healthcare infrastructure in rural and urban regions. The goal is to identify gaps in healthcare access and provide data-driven recommendations to reduce maternal mortality.
+[Click here](https://docs.google.com/presentation/d/1iFs9bm8bC3JX_Rr49ghvOc8DxYUAuu0m3WAhoI_A4eU/edit?usp=sharing) to access Pitch deck Presentation.
 
-### Part 1: SDG Selection and Problem Definition
-- **SDG Selection:** Choose an SDG (e.g., SDG 3: Good Health, SDG 7: Affordable and Clean Energy).
-- **Problem Definition:** Define a specific problem within your chosen SDG that can be addressed using data.
+---
 
-### Part 2: Database Design
-- **ERD:** Design an ERD for your project, including entities relevant to your SDG problem.
-- **Schema:** Write SQL statements to create the database schema based on your ERD.
-- **Sample Data:** Populate the database with relevant sample data.
+#### The Deliverables of the project are on this repository:
 
-### Part 3: SQL Programming
-- **Data Retrieval:** Write SQL queries to retrieve relevant data based on your problem definition.
-- **Data Analysis:** Write SQL queries to analyze data and generate insights related to your SDG problem.
+- [SDG problem definition document](./ProblemDefination.pdf)
+- [ERD](./ERDMoratlityRate.png)
+- [SQL scripts](./SQLMoratalityRate.sql)
+- [Excel workbook with data analysis and dashboard](./MortalityRate.xlsx)
+- [Integration documentation](#integration-documentation)
+- [Pitch deck presentation link ](https://docs.google.com/presentation/d/1iFs9bm8bC3JX_Rr49ghvOc8DxYUAuu0m3WAhoI_A4eU/edit?usp=sharing)
 
-### Part 4: Data Analysis Using Excel
-- **Import Data:** Import data from your database into Excel.
-- **Analysis:** Analyze the data using pivot tables, charts, and other Excel tools.
-- **Dashboard:** Create an interactive Excel dashboard to visualize key insights.
+---
 
-### Part 5: Integration and Testing
-- **Integration:** Document the process of importing data into Excel and ensuring consistency.
-- **Testing:** Test the integration and functionality of your Excel dashboard.
+The Excel work book contain 8 sheets:
 
-### Part 6: Presentation
-- **Pitch Deck:** Develop a 10-slide PowerPoint presentation as taught in the entrepreneurship module covering:
-  - Project overview and SDG alignment.
-  - Problem definition and significance.
-  - Database design and schema.
-  - Data analysis insights.
-  - Excel dashboard demonstration.
-- **Delivery:** Present your pitch deck, demonstrating how your project addresses the SDG problem.
+- Dashboard
+- MaternalMortalityRatePivot
+- HealthCareCapacity
+- AvgMortalityRate
+- populationPivot
+- population
+- AvgMorarlityvsCapacity
+- MaternalMortalityRate
 
-## Deliverables (upload onto this repo)
-- SDG problem definition document
-- ERD
-- SQL scripts
-- Excel workbook with data analysis and dashboard
-- Integration documentation
-- Pitch deck presentation (Provide the link e.g Canva or Gamma in your documentation)
+## **Integration Documentation**
 
+This section explains how to import data from the database into Excel and ensure consistency for analysis.
+
+### **Step 1: Export Data from the Database**
+
+Run the following SQL queries to retrieve the required data and export the results as CSV files:
+
+1. **Maternal Mortality Rates by Region and Year**
+
+   ```sql
+   SELECT R.RegionName, M.Year, M.MortalityRate
+   FROM MaternalMortality M
+   JOIN Regions R ON M.RegionID = R.RegionID
+   ORDER BY R.RegionName, M.Year;
+   ```
+
+   - Save as: `MaternalMortalityRates.csv`
+
+2. **Healthcare Facility Capacity by Region**
+
+   ```sql
+   SELECT R.RegionName, SUM(H.Capacity) AS TotalCapacity
+   FROM HealthcareFacilities H
+   JOIN Regions R ON H.RegionID = R.RegionID
+   GROUP BY R.RegionName;
+   ```
+
+   - Save as: `HealthcareCapacity.csv`
+
+3. **Population Data by Region and Year**
+
+   ```sql
+   SELECT R.RegionName, P.Year, P.PopulationCount
+   FROM Population P
+   JOIN Regions R ON P.RegionID = R.RegionID
+   ORDER BY R.RegionName, P.Year;
+   ```
+
+   - Save as: `PopulationData.csv`
+
+4. **Maternal Mortality Rates vs. Healthcare Capacity**
+
+   ```sql
+   SELECT R.RegionName, AVG(M.MortalityRate) AS AvgMortalityRate, SUM(H.Capacity) AS TotalCapacity
+   FROM MaternalMortality M
+   JOIN Regions R ON M.RegionID = R.RegionID
+   JOIN HealthcareFacilities H ON R.RegionID = H.RegionID
+   GROUP BY R.RegionName;
+   ```
+
+   - Save as: `MortalityVsCapacity.csv`
+
+5. **Urban vs. Rural Maternal Mortality Rates**
+   ```sql
+   SELECT R.UrbanRural, AVG(M.MortalityRate) AS AvgMortalityRate
+   FROM MaternalMortality M
+   JOIN Regions R ON M.RegionID = R.RegionID
+   GROUP BY R.UrbanRural;
+   ```
+   - Save as: `UrbanRuralMortality.csv`
+
+---
+
+### **Step 2: Import Data into Excel**
+
+1. Open Microsoft Excel.
+2. Go to the **Data** tab and click on **Get Data** > **From Text/CSV**.
+3. Select the CSV file you want to import and click **Import**.
+4. In the preview window, ensure the data is correctly formatted (e.g., correct delimiter, no missing values).
+5. Click **Load** to import the data into Excel as a table.
+6. Repeat this process for all CSV files, loading each into a separate sheet in the workbook.
+
+---
+
+### **Step 3: Ensure Data Consistency**
+
+1. Check for missing or inconsistent data in each table.
+2. Use Excel’s **Remove Duplicates** feature to clean the data.
+3. Ensure that all numeric fields (e.g., `MortalityRate`, `Capacity`, `PopulationCount`) are formatted correctly.
+4. Verify that all foreign keys (e.g., `RegionID`) match across tables.
+
+---
+
+## **Testing Documentation**
+
+To ensure the integration works as expected:
+
+1. Verify data accuracy by cross-checking the data in Excel with the original database.
+2. Test pivot tables and charts to ensure they update correctly when the underlying data changes.
+3. Test dashboard interactivity by using slicers to filter data.
+4. Validate key metrics (e.g., average mortality rate, total healthcare capacity) using Excel formulas.
+
+---
+
+## **How to Use This Project**
+
+1. Clone this repository.
+2. Run the SQL queries provided in the **[Integration Documentation](#integration-documentation)** to export data.
+3. Import the CSV files into Excel and follow the steps above to create the dashboard.
+4. Analyze the data and generate insights to address maternal mortality.
